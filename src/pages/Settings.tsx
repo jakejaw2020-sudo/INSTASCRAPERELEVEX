@@ -24,6 +24,8 @@ export default function SettingsPage(): JSX.Element {
   const [days, setDays] = useState(['monday', 'wednesday', 'friday']);
   const [hour, setHour] = useState(11);
 
+  const getConnectionDotColor = (key: KeyField['key']): 'green' | 'red' => (status[key] === 'ok' && Boolean(values[key]?.trim()) ? 'green' : 'red');
+
   const connectionTesters = useMemo(
     () => ({
       openai_api_key: async () => window.electronAPI.generateContent({ systemPrompt: 'You are a test harness.', userPrompt: 'Respond with ok' }),
@@ -59,7 +61,14 @@ export default function SettingsPage(): JSX.Element {
           {keyFields.map((field) => (
             <div key={field.key} className="grid grid-cols-[240px_1fr_auto_auto] items-center gap-2">
               <label className="text-xs text-[var(--text-secondary)]">{field.label}</label>
-              <Input type="password" value={values[field.key] ?? ''} onChange={(event) => setValues((prev) => ({ ...prev, [field.key]: event.target.value }))} />
+              <Input
+                type="password"
+                value={values[field.key] ?? ''}
+                onChange={(event) => {
+                  setValues((prev) => ({ ...prev, [field.key]: event.target.value }));
+                  setStatus((prev) => ({ ...prev, [field.key]: 'idle' }));
+                }}
+              />
               <Button onClick={async () => {
                 try {
                   await setSecret(field.key, values[field.key] ?? '');
@@ -68,13 +77,13 @@ export default function SettingsPage(): JSX.Element {
                   setStatus((prev) => ({ ...prev, [field.key]: 'error' }));
                 }
               }}>
-                Save {status[field.key] === 'ok' ? <StatusDot color="green" /> : status[field.key] === 'error' ? <StatusDot color="red" /> : <StatusDot color="gray" />}
+                Save <StatusDot color={getConnectionDotColor(field.key)} />
               </Button>
               <Button onClick={async () => {
                 try { await connectionTesters[field.key](); setStatus((prev) => ({ ...prev, [field.key]: 'ok' })); }
                 catch { setStatus((prev) => ({ ...prev, [field.key]: 'error' })); }
               }}>
-                Test Connection {status[field.key] === 'ok' ? <StatusDot color="green" /> : status[field.key] === 'error' ? <StatusDot color="red" /> : <StatusDot color="gray" />}
+                Test Connection <StatusDot color={getConnectionDotColor(field.key)} />
               </Button>
             </div>
           ))}
