@@ -1,4 +1,4 @@
-import keytar from 'keytar';
+import * as keytar from 'keytar';
 import type { ApiSecretKey } from '../src/types';
 
 const SERVICE = 'elevex-carousel-studio';
