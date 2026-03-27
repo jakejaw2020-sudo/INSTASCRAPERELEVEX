@@ -13,6 +13,10 @@ export default defineConfig({
       rollupOptions: {
         input: {
           index: mainEntry
+        },
+        output: {
+          format: 'cjs',
+          entryFileNames: 'index.js'
         }
       }
     }
@@ -20,9 +24,18 @@ export default defineConfig({
   preload: {
     build: {
       outDir: 'dist-electron/preload',
+      lib: {
+        entry: preloadEntry,
+        formats: ['cjs'],
+        fileName: () => 'index.js'
+      },
       rollupOptions: {
         input: {
           index: preloadEntry
+        },
+        output: {
+          format: 'cjs',
+          entryFileNames: 'index.js'
         }
       }
     }
