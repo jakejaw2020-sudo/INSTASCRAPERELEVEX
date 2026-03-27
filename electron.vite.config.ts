@@ -23,6 +23,10 @@ export default defineConfig({
       rollupOptions: {
         input: {
           index: preloadEntry
+        },
+        output: {
+          format: 'cjs',
+          entryFileNames: 'index.cjs'
         }
       }
     }
