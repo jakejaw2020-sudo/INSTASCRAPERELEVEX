@@ -1,8 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import StatusDot from '@/components/ui/StatusDot';
-import { setSecret } from '@/services/keychain';
+import { getSecret, setSecret } from '@/services/keychain';
 
 interface KeyField { label: string; key: 'openai_api_key' | 'apify_api_token' | 'meta_access_token' | 'meta_instagram_user_id' | 'supabase_url' | 'supabase_anon_key'; }
 const keyFields: KeyField[] = [
@@ -36,6 +36,20 @@ export default function SettingsPage(): JSX.Element {
     []
   );
 
+  useEffect(() => {
+    void Promise.all(
+      keyFields.map(async (field) => {
+        const value = await getSecret(field.key);
+        return { key: field.key, value: value ?? '' };
+      })
+    ).then((storedSecrets) => {
+      setValues((prev) => ({
+        ...prev,
+        ...Object.fromEntries(storedSecrets.map((entry) => [entry.key, entry.value]))
+      }));
+    });
+  }, []);
+
   return (
     <div className="space-y-6 p-4">
       <h2 className="font-display text-lg">Settings</h2>
@@ -46,7 +60,16 @@ export default function SettingsPage(): JSX.Element {
             <div key={field.key} className="grid grid-cols-[240px_1fr_auto_auto] items-center gap-2">
               <label className="text-xs text-[var(--text-secondary)]">{field.label}</label>
               <Input type="password" value={values[field.key] ?? ''} onChange={(event) => setValues((prev) => ({ ...prev, [field.key]: event.target.value }))} />
-              <Button onClick={async () => { await setSecret(field.key, values[field.key] ?? ''); }}>Save</Button>
+              <Button onClick={async () => {
+                try {
+                  await setSecret(field.key, values[field.key] ?? '');
+                  setStatus((prev) => ({ ...prev, [field.key]: 'ok' }));
+                } catch {
+                  setStatus((prev) => ({ ...prev, [field.key]: 'error' }));
+                }
+              }}>
+                Save {status[field.key] === 'ok' ? <StatusDot color="green" /> : status[field.key] === 'error' ? <StatusDot color="red" /> : <StatusDot color="gray" />}
+              </Button>
               <Button onClick={async () => {
                 try { await connectionTesters[field.key](); setStatus((prev) => ({ ...prev, [field.key]: 'ok' })); }
                 catch { setStatus((prev) => ({ ...prev, [field.key]: 'error' })); }

@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 
 const mainEntry = resolve(__dirname, 'electron/main.ts');
 const preloadEntry = resolve(__dirname, 'electron/preload.ts');
-const rendererEntry = resolve(__dirname, 'index.html');
+const rendererEntry = 'index.html';
 
 export default defineConfig({
   main: {
@@ -30,7 +30,9 @@ export default defineConfig({
   renderer: {
     build: {
       rollupOptions: {
-        input: rendererEntry
+        input: {
+          index: rendererEntry
+        }
       }
     },
     resolve: {
