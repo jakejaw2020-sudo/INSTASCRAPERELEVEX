@@ -4,31 +4,35 @@ import { resolve } from 'node:path';
 
 const mainEntry = resolve(__dirname, 'electron/main.ts');
 const preloadEntry = resolve(__dirname, 'electron/preload.ts');
+const rendererEntry = resolve(__dirname, 'index.html');
 
 export default defineConfig({
   main: {
     build: {
-      outDir: 'dist-electron',
-      lib: {
-        entry: mainEntry
-      },
+      outDir: 'dist-electron/main',
       rollupOptions: {
-        input: mainEntry
+        input: {
+          index: mainEntry
+        }
       }
     }
   },
   preload: {
     build: {
-      outDir: 'dist-electron',
-      lib: {
-        entry: preloadEntry
-      },
+      outDir: 'dist-electron/preload',
       rollupOptions: {
-        input: preloadEntry
+        input: {
+          index: preloadEntry
+        }
       }
     }
   },
   renderer: {
+    build: {
+      rollupOptions: {
+        input: rendererEntry
+      }
+    },
     resolve: {
       alias: {
         '@': resolve(__dirname, 'src')

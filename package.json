@@ -2,7 +2,7 @@
   "name": "elevex-carousel-studio",
   "version": "0.1.0",
   "private": true,
-  "main": "dist-electron/main.js",
+  "main": "dist-electron/main/index.js",
   "type": "module",
   "scripts": {
     "dev": "electron-vite dev",
