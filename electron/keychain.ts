@@ -1,5 +1,13 @@
-import keytar from 'keytar';
+import { createRequire } from 'node:module';
 import type { ApiSecretKey } from '../src/types';
+
+const require = createRequire(import.meta.url);
+type KeytarModule = {
+  setPassword: (service: string, account: string, password: string) => Promise<void>;
+  getPassword: (service: string, account: string) => Promise<string | null>;
+  deletePassword: (service: string, account: string) => Promise<boolean>;
+};
+const keytar = require('keytar') as KeytarModule;
 
 const SERVICE = 'elevex-carousel-studio';
 
