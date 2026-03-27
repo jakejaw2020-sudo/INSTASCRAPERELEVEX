@@ -13,6 +13,10 @@ export default defineConfig({
       rollupOptions: {
         input: {
           index: mainEntry
+        },
+        output: {
+          format: 'cjs',
+          entryFileNames: 'index.js'
         }
       }
     }
@@ -23,6 +27,10 @@ export default defineConfig({
       rollupOptions: {
         input: {
           index: preloadEntry
+        },
+        output: {
+          format: 'cjs',
+          entryFileNames: 'index.js'
         }
       }
     }
