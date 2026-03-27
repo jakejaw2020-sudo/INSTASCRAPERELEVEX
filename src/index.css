@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-base: #080808;
+  --bg-surface: #111111;
+  --bg-elevated: #1a1a1a;
+  --bg-input: #141414;
+  --border: #222222;
+  --border-active: #333333;
+  --text-primary: #f0eee8;
+  --text-secondary: #7a7870;
+  --text-tertiary: #3d3c38;
+  --accent: #c8ff00;
+  --accent-dim: #8aaf00;
+  --accent-subtle: #1a2200;
+  --red: #ff4040;
+  --amber: #f5a623;
+  --teal: #00d4b4;
+}
+
+* {
+  @apply border-[#222222];
+}
+
+body {
+  @apply m-0 bg-[var(--bg-base)] text-[var(--text-primary)] font-body;
+}
+
+button:disabled {
+  @apply opacity-60 cursor-not-allowed;
+}
