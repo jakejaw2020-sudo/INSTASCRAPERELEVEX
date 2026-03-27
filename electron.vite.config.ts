@@ -2,12 +2,18 @@ import { defineConfig } from 'electron-vite';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'node:path';
 
+const mainEntry = resolve(__dirname, 'electron/main.ts');
+const preloadEntry = resolve(__dirname, 'electron/preload.ts');
+
 export default defineConfig({
   main: {
     build: {
       outDir: 'dist-electron',
       lib: {
-        entry: resolve(__dirname, 'electron/main.ts')
+        entry: mainEntry
+      },
+      rollupOptions: {
+        input: mainEntry
       }
     }
   },
@@ -15,7 +21,10 @@ export default defineConfig({
     build: {
       outDir: 'dist-electron',
       lib: {
-        entry: resolve(__dirname, 'electron/preload.ts')
+        entry: preloadEntry
+      },
+      rollupOptions: {
+        input: preloadEntry
       }
     }
   },
